@@ -5,11 +5,16 @@
 
 using namespace std;
 
+void menu();
+
+
+
 class Customers{
 	
 	public:
 		string name, gender, address;
-		int age, mobileNo, cusId;
+		int age, mobileNo;
+		static int cusId;
 		char all[999];
 		
 	void getDetails(){
@@ -51,13 +56,15 @@ class Customers{
 	
 };
 
+int Customers::cusId;
+
 class Cabs{
 	
 	public:
 		int cabChoice;
 		float kilometers;
 		float cabCost;
-		float lastcabCost;
+		static float lastcabCost;
 		
 		void cabDetails(){
 			cout << "We collaborated with the fasted and safest cab service"<<endl;
@@ -92,7 +99,7 @@ class Cabs{
 							break;
 						}
 						default:{
-							cout<<"Invalid input.  Redirecting... ";
+						    cout<<"Invalid input... Redirecting..."<<endl<<endl;
 							Sleep(5000);
 							system("CLS");
 							cabDetails();
@@ -119,7 +126,7 @@ class Cabs{
 							break;
 						}
 						default:{
-							cout<<"Invalid input.  Redirecting... ";
+							cout<<"Invalid input... Redirecting..."<<endl<<endl;
 							Sleep(5000);
 							system("CLS");
 							cabDetails();
@@ -129,22 +136,30 @@ class Cabs{
 					break;
 				}
 				default:{
-					cout<<"Invalid input. Redirecting...";
+					cout<<"Invalid input... Redirecting..."<<endl<<endl;
 					Sleep(5000);
 					system("CLS");
 					cabDetails();
 					break;
 				}
 			}
+			
+			int gotomenu;
+			cout<<"GOING TO MENU......."<<endl<<endl;
+			Sleep(5000);
+			cin>>gotomenu;
+			menu();
 		}
 	
 };
+
+float Cabs::lastcabCost;
 
 class Booking{
 	public:
 		int choiceHotel;
 		int packChoice;
-		float hotelCost;
+		static float hotelCost;
 		
 		void hotelBooking(){
 			string hotels[] = {"Avenra", "Beach View", "Cloud Haven"};
@@ -200,18 +215,234 @@ class Booking{
 					
 					break;
 				}
+				case 2: {
+					cout<<"------------Welcome to hotel Beach View---------------"<<endl<<endl;
+					cout<<"The garden, food, beverages, playground. Enjoy all of these here at Beach View."<<endl;
+					cout<<"Packages offered : "<<endl<<endl;
+					cout<<"1. Standard Pack : \tAll basic facilities you need for Rs. 5000"<<endl;
+					cout<<"2. Premium Pack : \tAll Premium facilities you need for Rs. 10000"<<endl;
+					cout<<"3. Luxury Pack : \tAll luxury facilities you need for Rs. 15000"<<endl<<endl;
+					
+					cout<<"Press 0 to go back"<<endl;
+					cout<<"Enter package number you want to choose : ";
+					cin >> packChoice;
+					
+					switch(packChoice){
+						case 1: {
+							hotelCost = 4000.00;
+							cout<<"You have successfully booked standard package at Beach View"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						case 2: {
+							hotelCost = 11000.00;
+							cout<<"You have successfully booked premium package at Beach View"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						case 3: {
+							hotelCost = 16000.00;
+							cout<<"You have successfully booked luxury package at Beach View"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						default:{
+							system("CLS");
+							hotelBooking();
+							break;
+						}
+					}
+					break;
+				}
+				case 3: {
+					cout<<"------------Welcome to hotel Cloud Haven---------------"<<endl<<endl;
+					cout<<"The garden, food, beverages, playground. Enjoy all of these here at Cloud Haven."<<endl;
+					cout<<"Packages offered : "<<endl<<endl;
+					cout<<"1. Standard Pack : \tAll basic facilities you need for Rs. 5000"<<endl;
+					cout<<"2. Premium Pack : \tAll Premium facilities you need for Rs. 10000"<<endl;
+					cout<<"3. Luxury Pack : \tAll luxury facilities you need for Rs. 15000"<<endl<<endl;
+					
+					cout<<"Press 0 to go back"<<endl;
+					cout<<"Enter package number you want to choose : ";
+					cin >> packChoice;
+					
+					switch(packChoice){
+						case 1: {
+							hotelCost = 7000.00;
+							cout<<"You have successfully booked standard package at Cloud Haven"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						case 2: {
+							hotelCost = 14000.00;
+							cout<<"You have successfully booked premium package at Cloud Haven"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						case 3: {
+							hotelCost = 25000.00;
+							cout<<"You have successfully booked luxury package at Cloud Haven"<<endl;
+							cout<<"Goto menu and take the receipt"<<endl;
+							break;
+						}
+						default:{
+							system("CLS");
+							hotelBooking();
+							break;
+						}
+					}
+					break;
+				}
 			}		
+			
+			int gotomenu;
+			cout<<"Press any key to go to menu : ";
+			cin>>gotomenu;
+			menu();
 		}
 };
 
-class Charges{
-	
+float Booking::hotelCost;
+
+class Charges : public Booking, Cabs, Customers{
+	public:
+		void printBill(){
+			ofstream outf("receipt.txt");
+			{
+				outf<<"---------ABC Travel Agency-----------"<<endl;
+				outf<<"-------------Receipt-------------"<<endl;
+				outf<<"_________________________________"<<endl;
+				
+				outf<<"Customer Id : "<<Customers::cusId<<endl<<endl;
+				outf<<"Description\t\t Total"<<endl;
+				outf<<"Hotel Cost :\t\t "<<fixed<<setprecision(2)<<Booking::hotelCost<<endl;
+				outf<<"Cab Cost :\t\t "<<fixed<<setprecision(2)<<Cabs::lastcabCost<<endl;
+				
+				outf<<"_________________________________"<<endl;
+				outf<<"Total Cost :\t\t "<<fixed<<setprecision(2)<<Booking::hotelCost + Cabs::lastcabCost<<endl;
+				outf<<"_________________________________"<<endl;
+				outf<<"---------THANK YOU---------------"<<endl;
+			}
+			
+			outf.close();
+			
+		}
+		
+		void showBill(){
+			ifstream inf("receipt.txt");
+			{
+				if(!inf){
+					cout<<"File opening error!"<<endl;
+				}
+				while(!(inf.eof())){
+					inf.getline(all,999);
+					cout<<all<<endl;
+				}
+			}
+			
+			inf.close();
+		}
 };
+
+
+void menu(){
+	
+	int mainChoice;
+	int inChoice;
+	int gotomenu;
+	
+	cout<<"-------------ABC Travels------------"<<endl;
+	cout<<"---------------Main Menu-----------------"<<endl;
+	cout<<"__________________________________________"<<endl;
+	cout<<"|                                        | "<<endl;
+	cout<<"| customer management       -> 1         | "<<endl;
+	cout<<"| Cabs management           -> 2         | "<<endl;
+	cout<<"| Bookings management       -> 3         | "<<endl;
+	cout<<"| Charges and Bill          -> 4         | "<<endl;
+	cout<<"| Exit                      -> 5         | "<<endl;
+	cout<<"|                                        | "<<endl;
+	cout<<"|________________________________________| "<<endl<<endl<<endl;
+	
+	cout<<"Enter Your choice : ";
+	cin>>mainChoice;
+	
+	system("CLS");
+	
+	Customers customer;
+	Cabs cab;
+	Booking booking;
+	Charges charges;
+	
+	switch(mainChoice){
+		case 1:{
+			cout<<"----------Customers------------"<<endl<<endl;
+			cout<<"1. Enter New Customer "<<endl;
+			cout<<"2. See Old Customers "<<endl<<endl;
+			cout<<"Enter choice : ";
+			cin>> inChoice;
+			
+			system("CLS");
+			
+			switch(inChoice){
+				case 1:{
+					customer.getDetails();
+					break;
+				}
+				case 2:{
+					customer.showDetails();
+					break;
+				}
+				default:{
+					cout<<"Invalid input... Redirecting..."<<endl<<endl;
+					Sleep(5000);
+					menu();
+					break;
+				}
+			}
+			
+			break;
+		}
+		
+		case 2: {
+			cab.cabDetails();
+			break;
+		}
+		
+		case 3: {
+			booking.hotelBooking();
+			break;
+		}
+		
+		case 4:{
+			charges.printBill();
+			charges.showBill();
+			break;
+		}
+		
+		case 5: {
+			return;
+			break;
+		}
+		
+		default: {
+			cout<<"Invalid input... Redirecting..."<<endl<<endl;
+			Sleep(5000);
+			menu();
+			break;
+		}
+	}
+	
+	 cout<<"Have a Great Day!!!"<<endl;
+	 cout<<"Press any key to goto menu :";
+	 cin>>gotomenu;
+	 menu();
+	
+}
 
 
 int main(){
 	
-	cout << " Welcome " << endl;
+	menu();
 	
 	
 	return 0;
